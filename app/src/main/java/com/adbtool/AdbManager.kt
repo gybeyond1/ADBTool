@@ -3,6 +3,7 @@ package com.adbtool
 import com.cgutman.adblib.AdbConnection
 import com.cgutman.adblib.AdbCrypto
 import com.cgutman.adblib.AdbStream
+import com.cgutman.adblib.TcpChannel
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
@@ -27,7 +28,8 @@ object AdbManager {
         }
         val socket = Socket()
         socket.connect(InetSocketAddress(host, port), timeout)
-        val conn = AdbConnection.create(socket, keyPair)
+        val channel = TcpChannel(socket)
+        val conn = AdbConnection.create(channel, keyPair)
         conn.connect()
         connection = conn
         currentHost = host
