@@ -1,18 +1,19 @@
 package com.adbtool
 
 import com.cgutman.adblib.AdbConnection
-import com.cgutman.adblib.AdbKeyPair
+import com.cgutman.adblib.AdbCrypto
 import com.cgutman.adblib.AdbStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
-import java.net.InetAddress
+import java.net.InetSocketAddress
+import java.net.Socket
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 object AdbManager {
     private var connection: AdbConnection? = null
-    private var keyPair: AdbKeyPair? = null
+    private var keyPair: AdbCrypto? = null
     var currentHost: String = ""
     var currentPort: Int = 5555
 
@@ -22,11 +23,12 @@ object AdbManager {
     @Throws(Exception::class)
     fun connect(host: String, port: Int = 5555, timeout: Int = 15000) {
         if (keyPair == null) {
-            keyPair = AdbKeyPair.create()
+            keyPair = AdbCrypto.generateAdbKeyPair()
         }
-        val addr = InetAddress.getByName(host)
-        val conn = AdbConnection.create(addr, port, keyPair)
-        conn.connect(timeout)
+        val socket = Socket()
+        socket.connect(InetSocketAddress(host, port), timeout)
+        val conn = AdbConnection.create(socket, keyPair)
+        conn.connect()
         connection = conn
         currentHost = host
         currentPort = port
