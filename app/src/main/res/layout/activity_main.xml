@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="ADB 工具"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="8dp">
+
+        <EditText
+            android:id="@+id/etIp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:hint="IP地址"
+            android:inputType="numberDecimal"
+            android:singleLine="true"
+            android:layout_marginEnd="8dp" />
+
+        <EditText
+            android:id="@+id/etPort"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="端口"
+            android:inputType="number"
+            android:singleLine="true"
+            android:text="5555"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/btnConnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="连接" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/btnScan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="扫描局域网设备"
+        android:layout_marginBottom="8dp" />
+
+    <ProgressBar
+        android:id="@+id/progressScan"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:max="254"
+        android:visibility="gone"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:id="@+id/tvScanStatus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="点击扫描查找局域网内开启了无线调试的设备"
+        android:textSize="12sp"
+        android:textColor="@color/gray_dark"
+        android:layout_marginBottom="8dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvDevices"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:id="@+id/llConnected"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone"
+        android:layout_marginTop="8dp"
+        android:padding="12dp"
+        android:background="@color/gray_light">
+
+        <TextView
+            android:id="@+id/tvConnectedInfo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnFileManager"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="文件管理"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnAppManager"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="应用管理"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/btnDisconnect"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="断开" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
