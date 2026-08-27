@@ -35,10 +35,21 @@ jobs:
       - name: Create Release with APK
         run: |
           set -x
-          gh release delete latest --yes --cleanup-tag 2>&1 || true
-          gh release create latest \
-            app/build/outputs/apk/debug/app-debug.apk \
-            --title "Latest Build" \
-            --notes "Auto-built debug APK"
+          # 删除旧 release 和 tag
+          gh api "repos/${{ github.repository }}/releases/tags/latest" -X DELETE 2>/dev/null || true
+          gh api "repos/${{ github.repository }}/git/refs/tags/latest" -X DELETE 2>/dev/null || true
+          # 创建新 release
+          release_id=$(gh api "repos/${{ github.repository }}/releases" \
+            -f tag_name="latest" \
+            -f target_commitish="${{ github.sha }}" \
+            -f name="Latest Build" \
+            -f body="Auto-built debug APK from ${{ github.sha }}" \
+            --jq '.id')
+          echo "Release ID: $release_id"
+          # 上传 APK
+          gh api "repos/${{ github.repository }}/releases/$release_id/assets?name=ADBTool-debug.apk" \
+            -X POST \
+            -H "Content-Type: application/vnd.android.package-archive" \
+            --input app/build/outputs/apk/debug/app-debug.apk
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
