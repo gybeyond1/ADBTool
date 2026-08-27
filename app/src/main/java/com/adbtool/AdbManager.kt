@@ -1,5 +1,6 @@
 package com.adbtool
 
+import com.cgutman.adblib.AdbBase64
 import com.cgutman.adblib.AdbConnection
 import com.cgutman.adblib.AdbCrypto
 import com.cgutman.adblib.AdbStream
@@ -11,6 +12,12 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
+
+object AndroidAdbBase64 : AdbBase64 {
+    override fun encodeToString(data: ByteArray): String {
+        return android.util.Base64.encodeToString(data, android.util.Base64.NO_WRAP)
+    }
+}
 
 object AdbManager {
     private var connection: AdbConnection? = null
@@ -24,7 +31,7 @@ object AdbManager {
     @Throws(Exception::class)
     fun connect(host: String, port: Int = 5555, timeout: Int = 15000) {
         if (keyPair == null) {
-            keyPair = AdbCrypto.generateAdbKeyPair()
+            keyPair = AdbCrypto.generateAdbKeyPair(AndroidAdbBase64)
         }
         val socket = Socket()
         socket.connect(InetSocketAddress(host, port), timeout)
@@ -48,9 +55,17 @@ object AdbManager {
     fun shell(command: String): String {
         val conn = connection ?: throw IllegalStateException("未连接设备")
         val stream = conn.open("shell:$command")
-        val output = stream.readAllBytes()
-        stream.close()
-        return String(output).trim()
+        val baos = ByteArrayOutputStream()
+        try {
+            while (true) {
+                val data = stream.read()
+                baos.write(data)
+            }
+        } catch (_: java.io.IOException) {
+            // 流关闭时抛出 IOException，表示命令执行完毕
+        }
+        try { stream.close() } catch (_: Exception) {}
+        return baos.toString().trim()
     }
 
     data class FileItem(
