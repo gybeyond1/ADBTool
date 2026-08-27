@@ -34,11 +34,7 @@ jobs:
 
       - name: Create Release with APK
         run: |
-          gh release delete latest --yes --cleanup-tag || true
-          gh release create latest \
-            app/build/outputs/apk/debug/app-debug.apk \
-            --title "Latest Build" \
-            --notes "Auto-built debug APK from commit ${{ github.sha }}" \
-            --latest
+          gh release delete latest --yes --cleanup-tag 2>/dev/null || true
+          gh release create latest app/build/outputs/apk/debug/app-debug.apk --title "Latest Build" --notes "Auto-built debug APK from commit ${{ github.sha }}" --latest
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
